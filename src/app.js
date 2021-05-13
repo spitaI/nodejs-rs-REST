@@ -3,6 +3,7 @@ import swaggerUI from 'swagger-ui-express';
 import path from 'path';
 import YAML from 'yamljs';
 
+import initRoutes from './routes/index.js';
 import getDirname from './utils/getDirname.js';
 
 const __dirname = getDirname(import.meta.url);
@@ -21,5 +22,7 @@ app.use('/', (req, res, next) => {
   }
   next();
 });
+
+initRoutes(app);
 
 export default app;
