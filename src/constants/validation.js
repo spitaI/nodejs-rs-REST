@@ -20,3 +20,13 @@ export const BOARD_SCHEMA = Joi.object({
     .required(),
   id: Joi.string(),
 });
+
+export const TASK_SCHEMA = Joi.object({
+  title: Joi.string().required(),
+  order: Joi.number().required(),
+  description: Joi.string().required(),
+  userId: Joi.string().allow(null).required(),
+  boardId: Joi.string().allow(null).required(),
+  columnId: Joi.string().allow(null),
+  id: Joi.string(),
+});
