@@ -4,11 +4,18 @@ const DB = {
   TASKS: [],
 };
 
+class TableSelector extends Array {
+  select(fieldName, fieldValue) {
+    const result = this.filter(item => item?.[fieldName] === fieldValue) || [];
+    return new TableSelector(...result);
+  }
+}
+
 const wrapTable = table => {
   const getAll = () => table;
 
   const select = (fieldName, fieldValue) =>
-    table.filter(item => item?.[fieldName] === fieldValue);
+    new TableSelector(...table).select(fieldName, fieldValue);
 
   const getById = id => table.find(item => item?.id === id) || null;
 
