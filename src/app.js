@@ -4,8 +4,11 @@ import path from 'path';
 import YAML from 'yamljs';
 
 import initRoutes from './routes/index.js';
+import { COMMON_ERRORS } from './constants/errors.js';
 import getDirname from './utils/getDirname.js';
+import config from './common/config.js';
 
+const { NODE_ENV } = config;
 const __dirname = getDirname(import.meta.url);
 
 const app = express();
@@ -24,5 +27,13 @@ app.use('/', (req, res, next) => {
 });
 
 initRoutes(app);
+
+app.use(async (err, req, res, _) => {
+  if (NODE_ENV === 'development') {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  }
+  res.status(500).json({ message: COMMON_ERRORS.HTTP_500 });
+});
 
 export default app;
