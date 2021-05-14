@@ -28,12 +28,12 @@ app.use('/', (req, res, next) => {
 
 initRoutes(app);
 
-app.use(async (err, req, res, _) => {
+app.use(async (err, req, res, next) => {
   if (NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
-    console.error(err);
+    process.stderr.write(`${err.stack}\n`);
   }
   res.status(500).json({ message: COMMON_ERRORS.HTTP_500 });
+  next();
 });
 
 export default app;
