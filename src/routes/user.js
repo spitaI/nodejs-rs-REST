@@ -1,6 +1,5 @@
 import { Router } from 'express';
 
-import User from '../models/user.js';
 import * as userService from '../services/user.js';
 import { USER_SCHEMA } from '../constants/validation.js';
 import { USER_ERRORS } from '../constants/errors.js';
@@ -14,7 +13,7 @@ router
   .route('/')
   .get(async (req, res) => {
     const users = await userService.getAll();
-    return res.json(users.map(User.toResponse));
+    return res.json(users);
   })
   .post(validateUser, async (req, res) => {
     const newUser = await userService.create(req.body);
@@ -23,7 +22,7 @@ router
       return res.status(500).json({ message: USER_ERRORS.HTTP_500 });
     }
 
-    return res.status(201).json(User.toResponse(newUser));
+    return res.status(201).json(newUser);
   });
 
 router
@@ -36,7 +35,7 @@ router
       return res.status(404).json({ message: USER_ERRORS.HTTP_404(id) });
     }
 
-    return res.json(User.toResponse(user));
+    return res.json(user);
   })
   .put(validateUser, async (req, res) => {
     const { id } = req.params;
@@ -46,7 +45,7 @@ router
       return res.status(404).json({ message: USER_ERRORS.HTTP_404(id) });
     }
 
-    return res.json(User.toResponse(updatedUser));
+    return res.json(updatedUser);
   })
   .delete(async (req, res) => {
     const { id } = req.params;
