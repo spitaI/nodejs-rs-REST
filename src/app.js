@@ -1,8 +1,15 @@
-const express = require('express');
-const swaggerUI = require('swagger-ui-express');
-const path = require('path');
-const YAML = require('yamljs');
-const userRouter = require('./resources/users/user.router');
+import express from 'express';
+import swaggerUI from 'swagger-ui-express';
+import path from 'path';
+import YAML from 'yamljs';
+
+import initRoutes from './routes/index.js';
+import { COMMON_ERRORS } from './constants/errors.js';
+import getDirname from './utils/getDirname.js';
+import config from './common/config.js';
+
+const { NODE_ENV } = config;
+const __dirname = getDirname(import.meta.url);
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -19,6 +26,14 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/users', userRouter);
+initRoutes(app);
 
-module.exports = app;
+app.use(async (err, req, res, next) => {
+  if (NODE_ENV === 'development') {
+    process.stderr.write(`${err.stack}\n`);
+  }
+  res.status(500).json({ message: COMMON_ERRORS.HTTP_500 });
+  next();
+});
+
+export default app;
