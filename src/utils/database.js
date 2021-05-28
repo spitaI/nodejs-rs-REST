@@ -4,7 +4,20 @@ const DB = {
   TASKS: [],
 };
 
-/** Class extending the Array for usage of selecting elements by the value of some field */
+/**
+ * @typedef HelperFunctionsObject
+ * @type {object}
+ * @property {() => object[]} getAll
+ * @property {(fieldName: string, fieldValue: string | number | boolean) => TableSelector} select
+ * @property {(id: string) => object | null} getById
+ * @property {(item: object) => object} create
+ * @property {(item: object, newData: object) => object | null} update
+ * @property {(id: string, newData: object) => object | null} updateById
+ * @property {(item: object) => boolean} remove
+ * @property {(id: string) => boolean} removeById
+ */
+
+/** @class Class extending the Array for usage of selecting elements by the value of some field */
 class TableSelector extends Array {
   /**
    * Selects elements by the value of given field
@@ -21,7 +34,7 @@ class TableSelector extends Array {
 /**
  * Wrapping database table with helper functions
  * @param {object[]} table - The table of the database
- * @returns {object} Helper functions for working with database table
+ * @returns {HelperFunctionsObject} Helper functions for working with database table
  */
 const wrapTable = table => {
   /**
@@ -33,7 +46,7 @@ const wrapTable = table => {
   /**
    * Selects table elements by the value of given field
    * @param {string} fieldName - The name of the field to be selected by
-   * @param {*} fieldValue - The field value to test
+   * @param {string | number | boolean} fieldValue - The field value to test
    * @returns {TableSelector} TableSelector instance containing objects where given field equals to given value
    */
   const select = (fieldName, fieldValue) =>
@@ -118,7 +131,7 @@ const wrapTable = table => {
 /**
  * Get wrapped table by table name
  * @param {string} tableName - The name of the table
- * @returns {object | null} Object with helper functions for working with database table
+ * @returns {HelperFunctionsObject | null} Object with helper functions for working with database table
  */
 export const getTable = tableName =>
   DB[tableName] ? wrapTable(DB[tableName]) : null;
