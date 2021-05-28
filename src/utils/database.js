@@ -17,7 +17,7 @@ const DB = {
  * @property {(id: string) => boolean} removeById
  */
 
-/** @class Class extending the Array for usage of selecting elements by the value of some field */
+/** Class extending the Array for usage of selecting elements by the value of some field */
 class TableSelector extends Array {
   /**
    * Selects elements by the value of given field

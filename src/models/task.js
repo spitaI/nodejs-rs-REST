@@ -1,5 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * @typedef Task
+ * @type {object}
+ * @property {string} id
+ * @property {string} title
+ * @property {number} order
+ * @property {string} description
+ * @property {string} userId
+ * @property {string} boardId
+ * @property {string} columnId
+ */
+
 /** Class representing a task */
 class Task {
   /**

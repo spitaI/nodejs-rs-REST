@@ -1,5 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * @typedef User
+ * @type {object}
+ * @property {string} id
+ * @property {string} name
+ * @property {string} login
+ * @property {string} password
+ */
+
 /** Class representing a user */
 class User {
   /**

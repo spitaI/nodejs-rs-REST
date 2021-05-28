@@ -1,9 +1,13 @@
 import * as taskRepo from '../repositories/task.js';
 
 /**
+ * @typedef {import('../models/task.js').Task} Task
+ */
+
+/**
  * Get all tasks associated with given board from data store
  * @param {string} boardId - The id of the board associated with the tasks
- * @returns {Promise<object[]>} All tasks associated with given board
+ * @returns {Promise<Task[]>} All tasks associated with given board
  */
 export const getAll = async boardId => taskRepo.getAll(boardId);
 
@@ -11,7 +15,7 @@ export const getAll = async boardId => taskRepo.getAll(boardId);
  * Get task by id in the given board from data store
  * @param {string} boardId - The id of the board associated with the task
  * @param {string} taskId - The id of the task in the given board
- * @returns {Promise<object | null>} Task by id in the given board, or null if not found
+ * @returns {Promise<Task | null>} Task by id in the given board, or null if not found
  */
 export const getById = async (boardId, taskId) =>
   taskRepo.getById(boardId, taskId);
@@ -19,7 +23,7 @@ export const getById = async (boardId, taskId) =>
 /**
  * Add new task to data store
  * @param {object} task - The task to add to data store
- * @returns {Promise<object>} Newly created task
+ * @returns {Promise<Task>} Newly created task
  */
 export const create = async task => taskRepo.create(task);
 
@@ -28,7 +32,7 @@ export const create = async task => taskRepo.create(task);
  * @param {string} boardId - The id of the board associated with the task
  * @param {string} taskId - The id of the task in the given board
  * @param {object} taskData - The new task data
- * @returns {Promise<object | null>} Updated task, or null if not found
+ * @returns {Promise<Task | null>} Updated task, or null if not found
  */
 export const updateById = async (boardId, taskId, taskData) =>
   taskRepo.updateById(boardId, taskId, taskData);
@@ -53,7 +57,7 @@ export const deleteByBoardId = async boardId =>
 /**
  * Update tasks associated with given user on user deletion
  * @param {string} userId - The id of the user associated with the tasks
- * @returns {Promise<object[]>} Array of updated tasks
+ * @returns {Promise<Task[]>} Array of updated tasks
  */
 export const updateOnUserDelete = async userId =>
   taskRepo.updateOnUserDelete(userId);
