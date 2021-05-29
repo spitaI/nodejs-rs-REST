@@ -1,29 +1,32 @@
+/**
+ * @module UserService
+ * @category User
+ */
+
 import * as userRepo from '../repositories/user.js';
 import * as taskService from './task.js';
 
-/**
- * @typedef {import('../models/user.js').User} User
- */
+/** @typedef {import('../models/user.js').User} User */
 
 /**
  * Get all users from data store
  * @returns {Promise<User[]>} All users
  */
-export const getAll = async () => userRepo.getAll();
+const getAll = async () => userRepo.getAll();
 
 /**
  * Get user by id from data store
  * @param {string} id - The id of the user
  * @returns {Promise<User | null>} User by id, or null if not found
  */
-export const getById = async id => userRepo.getById(id);
+const getById = async id => userRepo.getById(id);
 
 /**
  * Add new user to data store
  * @param {object} user - The user to add to data store
  * @returns {Promise<User>} Newly created user
  */
-export const create = async user => userRepo.create(user);
+const create = async user => userRepo.create(user);
 
 /**
  * Update user by id in data store
@@ -31,15 +34,16 @@ export const create = async user => userRepo.create(user);
  * @param {object} userData - The new user data
  * @returns {Promise<User | null>} Updated user, or null if not found
  */
-export const updateById = async (id, userData) =>
-  userRepo.updateById(id, userData);
+const updateById = async (id, userData) => userRepo.updateById(id, userData);
 
 /**
  * Delete user by id from data store
  * @param {string} id - The id of the user to delete
  * @returns {Promise<boolean>} Whether user was deleted or not
  */
-export const deleteById = async id => {
+const deleteById = async id => {
   await taskService.updateOnUserDelete(id);
   return userRepo.deleteById(id);
 };
+
+export { getAll, getById, create, updateById, deleteById };

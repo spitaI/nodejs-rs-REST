@@ -1,3 +1,8 @@
+/**
+ * @module Database
+ * @category Utils
+ */
+
 const DB = {
   USERS: [],
   BOARDS: [],
@@ -5,16 +10,15 @@ const DB = {
 };
 
 /**
- * @typedef HelperFunctionsObject
- * @type {object}
- * @property {() => object[]} getAll
- * @property {(fieldName: string, fieldValue: string | number | boolean) => TableSelector} select
- * @property {(id: string) => object | null} getById
- * @property {(item: object) => object} create
- * @property {(item: object, newData: object) => object | null} update
- * @property {(id: string, newData: object) => object | null} updateById
- * @property {(item: object) => boolean} remove
- * @property {(id: string) => boolean} removeById
+ * @typedef {object} HelperFunctionsObject
+ * @property {function(): object[]} getAll
+ * @property {function(string, (string | number | boolean)): TableSelector} select
+ * @property {function(string): object | null} getById
+ * @property {function(object): object} create
+ * @property {function(object, object): object | null} update
+ * @property {function(string, object): object | null} updateById
+ * @property {function(object): boolean} remove
+ * @property {function(string): boolean} removeById
  */
 
 /** Class extending the Array for usage of selecting elements by the value of some field */
@@ -133,5 +137,6 @@ const wrapTable = table => {
  * @param {string} tableName - The name of the table
  * @returns {HelperFunctionsObject | null} Object with helper functions for working with database table
  */
-export const getTable = tableName =>
-  DB[tableName] ? wrapTable(DB[tableName]) : null;
+const getTable = tableName => (DB[tableName] ? wrapTable(DB[tableName]) : null);
+
+export { getTable };

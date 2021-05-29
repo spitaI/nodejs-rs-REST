@@ -1,3 +1,8 @@
+/**
+ * @module TaskRepository
+ * @category Task
+ */
+
 import Task from '../models/task.js';
 import { getTable } from '../utils/database.js';
 
@@ -8,7 +13,7 @@ const tasksTable = getTable('TASKS');
  * @param {string} boardId - The id of the board associated with the tasks
  * @returns {Promise<Task[]>} All tasks associated with given board
  */
-export const getAll = async boardId => tasksTable.select('boardId', boardId);
+const getAll = async boardId => tasksTable.select('boardId', boardId);
 
 /**
  * Get task by id in the given board
@@ -16,7 +21,7 @@ export const getAll = async boardId => tasksTable.select('boardId', boardId);
  * @param {string} taskId - The id of the task in the given board
  * @returns {Promise<Task | null>} Task by id in the given board, or null if not found
  */
-export const getById = async (boardId, taskId) =>
+const getById = async (boardId, taskId) =>
   tasksTable.select('boardId', boardId).select('id', taskId)[0] || null;
 
 /**
@@ -24,7 +29,7 @@ export const getById = async (boardId, taskId) =>
  * @param {object} task - The task to add to table
  * @returns {Promise<Task>} Newly created task
  */
-export const create = async task => tasksTable.create(new Task({ ...task }));
+const create = async task => tasksTable.create(new Task({ ...task }));
 
 /**
  * Update task by id in the given board
@@ -33,7 +38,7 @@ export const create = async task => tasksTable.create(new Task({ ...task }));
  * @param {object} taskData - The new task data
  * @returns {Promise<Task | null>} Updated task, or null if not found
  */
-export const updateById = async (boardId, taskId, taskData) => {
+const updateById = async (boardId, taskId, taskData) => {
   const task = await getById(boardId, taskId);
   return tasksTable.update(task, taskData);
 };
@@ -44,7 +49,7 @@ export const updateById = async (boardId, taskId, taskData) => {
  * @param {string} taskId - The id of the task in the given board
  * @returns {Promise<boolean>} Whether task was deleted or not
  */
-export const deleteById = async (boardId, taskId) => {
+const deleteById = async (boardId, taskId) => {
   const task = await getById(boardId, taskId);
   return tasksTable.remove(task);
 };
@@ -54,7 +59,7 @@ export const deleteById = async (boardId, taskId) => {
  * @param {string} boardId - The id of the board associated with the tasks
  * @returns {Promise<boolean>} Whether all tasks were deleted or not
  */
-export const deleteByBoardId = async boardId => {
+const deleteByBoardId = async boardId => {
   const boardTasks = await getAll(boardId);
   const deletedTasks = await Promise.all(
     boardTasks.map(task => tasksTable.remove(task))
@@ -67,7 +72,17 @@ export const deleteByBoardId = async boardId => {
  * @param {string} userId - The id of the user associated with the tasks
  * @returns {Promise<Task[]>} Array of updated tasks
  */
-export const updateOnUserDelete = async userId => {
+const updateOnUserDelete = async userId => {
   const userTasks = tasksTable.select('userId', userId);
   return userTasks.map(task => tasksTable.update(task, { userId: null }));
+};
+
+export {
+  getAll,
+  getById,
+  create,
+  updateById,
+  deleteById,
+  deleteByBoardId,
+  updateOnUserDelete,
 };

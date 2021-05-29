@@ -1,3 +1,8 @@
+/**
+ * @module getDirname
+ * @category Utils
+ */
+
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 

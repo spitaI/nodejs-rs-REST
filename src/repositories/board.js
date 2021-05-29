@@ -1,3 +1,8 @@
+/**
+ * @module BoardRepository
+ * @category Board
+ */
+
 import Board from '../models/board.js';
 import { getTable } from '../utils/database.js';
 
@@ -7,22 +12,21 @@ const boardsTable = getTable('BOARDS');
  * Get all boards
  * @returns {Promise<Board[]>} All boards
  */
-export const getAll = async () => boardsTable.getAll();
+const getAll = async () => boardsTable.getAll();
 
 /**
  * Get board by id
  * @param {string} id - The id of the board
  * @returns {Promise<Board | null>} Board by id, or null if not found
  */
-export const getById = async id => boardsTable.getById(id);
+const getById = async id => boardsTable.getById(id);
 
 /**
  * Add new board to table
  * @param {object} board - The board to add to table
  * @returns {Promise<Board>} Newly created board
  */
-export const create = async board =>
-  boardsTable.create(new Board({ ...board }));
+const create = async board => boardsTable.create(new Board({ ...board }));
 
 /**
  * Update board by id
@@ -30,7 +34,7 @@ export const create = async board =>
  * @param {object} boardData - The new board data
  * @returns {Promise<Board | null>} Updated board, or null if not found
  */
-export const updateById = async (id, boardData) =>
+const updateById = async (id, boardData) =>
   boardsTable.updateById(id, boardData);
 
 /**
@@ -38,4 +42,6 @@ export const updateById = async (id, boardData) =>
  * @param {string} id - The id of the board to delete
  * @returns {Promise<boolean>} Whether board was deleted or not
  */
-export const deleteById = async id => boardsTable.removeById(id);
+const deleteById = async id => boardsTable.removeById(id);
+
+export { getAll, getById, create, updateById, deleteById };
