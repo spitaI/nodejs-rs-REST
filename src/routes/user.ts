@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 
-import * as userService from '../services/user.js';
-import { USER_SCHEMA } from '../constants/validation.js';
-import { USER_ERRORS } from '../constants/errors.js';
-import { getValidationMiddleware } from '../middlewares/validation.js';
+import * as userService from '../services/user';
+import { USER_SCHEMA } from '../constants/validation';
+import { USER_ERRORS } from '../constants/errors';
+import { getValidationMiddleware } from '../middlewares/validation';
 
 const validateUser = getValidationMiddleware(USER_SCHEMA);
 
@@ -11,11 +11,11 @@ const router = Router();
 
 router
   .route('/')
-  .get(async (req, res) => {
+  .get(async (_req: Request, res: Response) => {
     const users = await userService.getAll();
     return res.json(users);
   })
-  .post(validateUser, async (req, res) => {
+  .post(validateUser, async (req: Request, res: Response) => {
     const newUser = await userService.create(req.body);
 
     if (!newUser) {
@@ -27,7 +27,7 @@ router
 
 router
   .route('/:id')
-  .get(async (req, res) => {
+  .get(async (req: Request<{ id: string }>, res: Response) => {
     const { id } = req.params;
     const user = await userService.getById(id);
 
@@ -37,7 +37,7 @@ router
 
     return res.json(user);
   })
-  .put(validateUser, async (req, res) => {
+  .put(validateUser, async (req: Request<{ id: string }>, res: Response) => {
     const { id } = req.params;
     const updatedUser = await userService.updateById(id, req.body);
 
@@ -47,7 +47,7 @@ router
 
     return res.json(updatedUser);
   })
-  .delete(async (req, res) => {
+  .delete(async (req: Request<{ id: string }>, res: Response) => {
     const { id } = req.params;
     const isUserDeleted = await userService.deleteById(id);
 
