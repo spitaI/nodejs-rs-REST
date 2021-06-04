@@ -10,6 +10,7 @@ dotenv.config({
 });
 
 export default {
+  APP_ROOT: path.join(dirname, '../..'),
   PORT: process.env['PORT'],
   NODE_ENV: process.env['NODE_ENV'],
   JWT_SECRET_KEY: process.env['JWT_SECRET_KEY'],
