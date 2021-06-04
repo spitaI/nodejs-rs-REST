@@ -29,6 +29,7 @@ app.use('/', (req: Request, res: Response, next: NextFunction) => {
     res.send('Service is running!');
     return;
   }
+  Promise.reject(Error('Oops!'));
   next();
 });
 
@@ -42,5 +43,16 @@ app.use(
     next();
   }
 );
+
+process.on('uncaughtException', (err: Error) => {
+  const date = new Date().toISOString();
+  logger.error(`[${date}] uncaughtException`, `\n${err.stack}`);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err: Error) => {
+  const date = new Date().toISOString();
+  logger.error(`[${date}] unhandledRejection`, `\n${err.stack}`);
+});
 
 export default app;
