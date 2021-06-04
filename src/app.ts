@@ -6,15 +6,21 @@ import YAML from 'yamljs';
 import initRoutes from './routes';
 import { COMMON_ERRORS } from './constants/errors';
 import getDirname from './utils/getDirname';
-import config from './common/config';
+import ExpressLogger from './utils/logger';
 
-const { NODE_ENV } = config;
 const dirname = getDirname(import.meta.url);
+
+const logger = new ExpressLogger({
+  filename: 'info.log',
+  errorFilename: 'error.log',
+});
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(dirname, '../doc/api.yaml'));
 
 app.use(express.json());
+
+app.use(logger.getLogMiddleware());
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
@@ -28,11 +34,10 @@ app.use('/', (req: Request, res: Response, next: NextFunction) => {
 
 initRoutes(app);
 
+app.use(logger.getErrorMiddleware());
+
 app.use(
-  async (err: Error, _req: Request, res: Response, next: NextFunction) => {
-    if (NODE_ENV === 'development') {
-      process.stderr.write(`${err.stack}\n`);
-    }
+  async (_err: Error, _req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ message: COMMON_ERRORS.HTTP_500 });
     next();
   }
