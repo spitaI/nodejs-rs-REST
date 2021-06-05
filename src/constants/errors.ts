@@ -4,16 +4,16 @@ export const COMMON_ERRORS = {
 
 export const USER_ERRORS = {
   HTTP_500: 'Error while creating new user',
-  HTTP_404: id => `User not found with id ${id}`,
+  HTTP_404: (id: string): string => `User not found with id ${id}`,
 };
 
 export const BOARD_ERRORS = {
   HTTP_500: 'Error while creating new board',
-  HTTP_404: id => `Board not found with id ${id}`,
+  HTTP_404: (id: string): string => `Board not found with id ${id}`,
 };
 
 export const TASK_ERRORS = {
   HTTP_500: 'Error while creating new task',
-  HTTP_404: (boardId, taskId) =>
+  HTTP_404: (boardId: string, taskId: string): string =>
     `Task not found with id ${taskId} within board ${boardId}`,
 };
