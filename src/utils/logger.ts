@@ -47,7 +47,7 @@ class ExpressLogger {
     return [logPath, errorPath];
   }
 
-  private static formatStatusCode(statusCode: number) {
+  private static formatStatusCode(statusCode: number): string {
     const code = `${statusCode}`;
 
     if (code.startsWith('2')) return chalk.green(code);
