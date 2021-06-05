@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import swaggerUI from 'swagger-ui-express';
+import fs from 'fs';
 import path from 'path';
 import YAML from 'yamljs';
 
@@ -46,7 +47,13 @@ app.use(
 
 process.on('uncaughtException', (err: Error) => {
   const date = new Date().toISOString();
-  logger.error(`[${date}] uncaughtException`, `\n${err.stack}`);
+  const message = `[${date}] uncaughtException \n${err.stack}`;
+
+  if (logger.errorPath) {
+    fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
+  }
+
+  logger.error(message);
   process.exit(1);
 });
 

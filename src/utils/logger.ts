@@ -19,6 +19,10 @@ class ExpressLogger {
 
   private errorLogStream: WriteStream | null;
 
+  readonly logPath?: string;
+
+  readonly errorPath?: string;
+
   private static getWriteStream(logPath?: string): WriteStream | null {
     if (!logPath) return null;
     return fs.createWriteStream(logPath, { flags: 'a' });
@@ -63,6 +67,10 @@ class ExpressLogger {
       errorFilename,
       dirname
     );
+
+    this.logPath = logPath;
+    this.errorPath = errorPath;
+
     this.logStream = ExpressLogger.getWriteStream(logPath);
     this.errorLogStream = ExpressLogger.getWriteStream(errorPath);
   }
