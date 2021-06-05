@@ -30,7 +30,6 @@ app.use('/', (req: Request, res: Response, next: NextFunction) => {
     res.send('Service is running!');
     return;
   }
-  Promise.reject(Error('Oops!'));
   next();
 });
 
