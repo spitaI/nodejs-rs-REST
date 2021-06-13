@@ -3,3 +3,4 @@ docs
 build
 logs
 *.log
+db_data

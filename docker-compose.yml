@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  app:
+    container_name: nodejs-rs-rest
+    restart: always
+    build: .
+    ports:
+      - '${PORT}:${PORT}'
+    volumes:
+      - ./src:/usr/app/src
+      - './${LOGS_DIRNAME}:/usr/app/${LOGS_DIRNAME}'
+    depends_on:
+      - db
+  db:
+    container_name: postgres
+    restart: always
+    build:
+      context: .
+      dockerfile: DB.Dockerfile
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: '${POSTGRES_USER}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
+      POSTGRES_DB: '${POSTGRES_DB}'

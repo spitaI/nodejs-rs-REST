@@ -3,6 +3,7 @@ node_modules
 build
 logs
 *.log
+db_data
 
 # Don't need delevopment files
 .github
@@ -16,4 +17,5 @@ test
 
 # Don't need Docker config files
 *Dockerfile
+docker-compose.yml
 .dockerignore
