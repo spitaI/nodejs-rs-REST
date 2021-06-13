@@ -4,6 +4,7 @@ build
 logs
 *.log
 db_data
+db_logs
 
 # Don't need delevopment files
 .github

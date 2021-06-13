@@ -12,6 +12,8 @@ services:
       - './${LOGS_DIRNAME}:/usr/app/${LOGS_DIRNAME}'
     depends_on:
       - db
+    networks:
+      - backend
   db:
     container_name: postgres
     restart: always
@@ -22,7 +24,15 @@ services:
       - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     volumes:
       - ./db_data:/var/lib/postgresql/data
+      - ./db_logs:/logs:z
+    command: postgres -c logging_collector=on -c log_directory=/logs
     environment:
       POSTGRES_USER: '${POSTGRES_USER}'
       POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
       POSTGRES_DB: '${POSTGRES_DB}'
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
