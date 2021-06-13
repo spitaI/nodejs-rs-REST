@@ -1,0 +1,19 @@
+# This will be created inside of the container
+node_modules
+build
+logs
+*.log
+
+# Don't need delevopment files
+.github
+.vscode
+.eslintrc.json
+.prettierrc
+.gitignore
+
+# Don't need tests
+test
+
+# Don't need Docker config files
+*Dockerfile
+.dockerignore
