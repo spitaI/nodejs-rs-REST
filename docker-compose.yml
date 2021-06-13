@@ -2,6 +2,7 @@ version: '3'
 
 services:
   app:
+    image: spitai/nodejs-rs-rest
     container_name: nodejs-rs-rest
     restart: always
     build: .
@@ -15,6 +16,7 @@ services:
     networks:
       - backend
   db:
+    image: spitai/postgres
     container_name: postgres
     restart: always
     build:
