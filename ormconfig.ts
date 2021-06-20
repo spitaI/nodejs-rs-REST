@@ -17,7 +17,9 @@ export default {
   password: POSTGRES_PASSWORD,
   database: POSTGRES_DB,
   entities: ['./src/models/**/*.ts'],
+  migrations: ['./migrations/**/*.ts'],
   cli: {
     entitiesDir: './src/models',
+    migrationsDir: './migrations',
   },
 };

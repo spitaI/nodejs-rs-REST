@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export interface IUser {
   id: string;
@@ -9,26 +9,19 @@ export interface IUser {
 
 export type UserResponse = Omit<IUser, 'password'>;
 
-class User implements IUser {
-  id: string;
+@Entity()
+class User {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-  name: string;
+  @Column('text')
+  name!: string;
 
-  login: string;
+  @Column('text')
+  login!: string;
 
-  password: string;
-
-  constructor({
-    id = uuidv4(),
-    name = 'USER',
-    login = 'user',
-    password = 'P@55w0rd',
-  }: IUser) {
-    this.id = id;
-    this.name = name;
-    this.login = login;
-    this.password = password;
-  }
+  @Column('text', { select: false })
+  password!: string;
 
   static toResponse(user: IUser | null): UserResponse | null {
     if (!user) return null;
