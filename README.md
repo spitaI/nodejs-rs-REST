@@ -27,6 +27,30 @@ After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
+## Running with Docker
+
+- Docker [Download & Install Docker](https://docs.docker.com/get-docker/)
+- [Link to DockerHub images](https://hub.docker.com/u/spitai)
+
+```
+docker-compose up
+```
+
+If you want to update the container images with the changes you made,
+stop docker-compose, if it is running, and run:
+
+```
+docker-compose down
+docker-compose build
+docker-compose up
+```
+
+To scan images for vulnerabilities, run:
+
+```
+docker scan <image name>
+```
+
 ## Testing
 
 After application running open new terminal and enter:

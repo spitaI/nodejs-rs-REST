@@ -8,12 +8,16 @@ import initRoutes from './routes';
 import { COMMON_ERRORS } from './constants/errors';
 import getDirname from './utils/getDirname';
 import ExpressLogger from './utils/logger';
+import config from './common/config';
+
+const { LOGS_DIRNAME } = config;
 
 const dirname = getDirname(import.meta.url);
 
 const logger = new ExpressLogger({
   filename: 'info.log',
   errorFilename: 'error.log',
+  dirname: LOGS_DIRNAME,
 });
 
 const app = express();
