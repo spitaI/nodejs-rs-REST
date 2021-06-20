@@ -1,85 +1,87 @@
-const DB = {
-  USERS: [],
-  BOARDS: [],
-  TASKS: [],
-};
+import {
+  getConnection,
+  EntityTarget,
+  FindConditions,
+  FindOneOptions,
+  FindManyOptions,
+  DeepPartial,
+} from 'typeorm';
 
-type FieldValue<T> = T[keyof T];
-type DBItem<T> = { [P in keyof T]: FieldValue<T> } & { id?: string };
+type FindOptions<T> = FindConditions<T> | FindOneOptions<T>;
 
-class TableSelector<T extends DBItem<T>> extends Array<T> {
-  select(fieldName: keyof T, fieldValue: FieldValue<T>): TableSelector<T> {
-    const result =
-      this.filter((item: T) => item[fieldName] === fieldValue) || [];
-    return new TableSelector(...result);
-  }
+interface IEntityDAO<T> {
+  getAll: (findOptions?: FindManyOptions<T>) => Promise<T[]>;
+  getById: (findOptions: FindOptions<T>) => Promise<T | null>;
+  create: (item: T) => Promise<T | null>;
+  update: (
+    findOptions: FindOptions<T>,
+    newData: DeepPartial<T>
+  ) => Promise<T | null>;
+  remove: (findOptions: FindOptions<T>) => Promise<boolean>;
 }
 
-interface ITableDAO<T extends DBItem<T>> {
-  getAll: () => T[];
-  select: (fieldName: keyof T, fieldValue: FieldValue<T>) => TableSelector<T>;
-  getById: (id: string) => T | null;
-  create: (item: T) => T;
-  update: (item: T | null, newData: Partial<T>) => T | null;
-  updateById: (id: string, newData: Partial<T>) => T | null;
-  remove: (item: T | null) => boolean;
-  removeById: (id: string) => boolean;
-}
+const wrapEntity = <T>(entity: EntityTarget<T>): IEntityDAO<T> => {
+  const getAll = async (findOptions?: FindManyOptions<T>): Promise<T[]> =>
+    getConnection().getRepository(entity).find(findOptions);
 
-const wrapTable = <T extends DBItem<T>>(table: T[]): ITableDAO<T> => {
-  const getAll = (): T[] => table;
-
-  const select = (
-    fieldName: keyof T,
-    fieldValue: FieldValue<T>
-  ): TableSelector<T> =>
-    new TableSelector(...table).select(fieldName, fieldValue);
-
-  const getById = (id: string): T | null =>
-    table.find(item => item?.id === id) || null;
-
-  const create = (item: T): T => {
-    table.push(item);
-    return item;
+  const getById = async (findOptions: FindOptions<T>): Promise<T | null> => {
+    try {
+      const item = await getConnection()
+        .getRepository(entity)
+        .findOne(findOptions);
+      return item ?? null;
+    } catch (e) {
+      return null;
+    }
   };
 
-  const update = (item: T | null, newData: Partial<T>): T | null => {
-    if (!item) return null;
-
-    const newItem = { ...item, ...newData };
-    table.splice(table.indexOf(item), 1, newItem);
-    return newItem;
+  const create = async (item: T): Promise<T | null> => {
+    try {
+      const createdItem = getConnection().getRepository(entity).create(item);
+      return await getConnection().getRepository(entity).save(createdItem);
+    } catch (e) {
+      return null;
+    }
   };
 
-  const updateById = (id: string, newData: Partial<T>): T | null => {
-    const item = getById(id);
-    return update(item, newData);
+  const update = async (
+    findOptions: FindOptions<T>,
+    newData: DeepPartial<T>
+  ): Promise<T | null> => {
+    try {
+      const updateResult = await getConnection()
+        .getRepository(entity)
+        .update(findOptions, newData);
+
+      if (updateResult.affected === 0) {
+        return null;
+      }
+
+      return await getById(findOptions);
+    } catch (e) {
+      return null;
+    }
   };
 
-  const remove = (item: T | null): boolean => {
-    if (!item) return false;
-
-    table.splice(table.indexOf(item), 1);
-    return true;
-  };
-
-  const removeById = (id: string): boolean => {
-    const item = getById(id);
-    return remove(item);
+  const remove = async (findOptions: FindOptions<T>): Promise<boolean> => {
+    try {
+      const deleteResult = await getConnection()
+        .getRepository(entity)
+        .delete(findOptions);
+      return deleteResult.affected !== 0;
+    } catch (e) {
+      return false;
+    }
   };
 
   return {
     getAll,
-    create,
     getById,
+    create,
     update,
-    updateById,
     remove,
-    removeById,
-    select,
   };
 };
 
-export const getTable = <T extends DBItem<T>>(
-  tableName: keyof typeof DB
-): ITableDAO<T> => wrapTable<T>(DB[tableName]);
+export const getEntityDAO = <T>(entity: EntityTarget<T>): IEntityDAO<T> =>
+  wrapEntity<T>(entity);
