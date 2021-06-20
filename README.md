@@ -51,6 +51,34 @@ To scan images for vulnerabilities, run:
 docker scan <image name>
 ```
 
+## Migrations
+
+Current migration files stored in `migrations` folder.
+To work with migrations, start the app using:
+
+```
+docker-compose up
+```
+
+When the DB and the app become running, you can use migrations functionality:
+
+- There is an inital migration file by default, but you can remove it and create your own by running:
+  ```
+  npm run migration:generate
+  ```
+
+- After migration was generated, you can apply changes to the database by running:
+  ```
+  npm run migration:run
+  ```
+
+- You can revert latest migration by running:
+  ```
+  npm run migration:revert
+  ```
+
+In summary, after you started the app using `docker-compose`, and applied migrations to the DB, you can start testing the application.
+
 ## Testing
 
 After application running open new terminal and enter:
