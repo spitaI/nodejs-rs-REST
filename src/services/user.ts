@@ -1,4 +1,5 @@
 import * as userRepo from '../repositories/user';
+import { hashPassword } from '../utils/user';
 
 export const getAll = async (): Promise<ReturnType<typeof userRepo.getAll>> =>
   userRepo.getAll();
@@ -14,7 +15,10 @@ export const getByUsername = async (
 
 export const create = async (
   user: Parameters<typeof userRepo.create>[0]
-): Promise<ReturnType<typeof userRepo.create>> => userRepo.create(user);
+): Promise<ReturnType<typeof userRepo.create>> => {
+  const userWithHashedPassword = await hashPassword(user);
+  return userRepo.create(userWithHashedPassword);
+};
 
 export const updateById = async (
   id: string,
