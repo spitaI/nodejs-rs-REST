@@ -1,3 +1,5 @@
+import { Connection } from 'typeorm';
+
 import app from './app';
 import config from './common/config';
 import * as userService from './services/user';
@@ -13,6 +15,7 @@ connect({
     dirname: LOGS_DIRNAME,
   }),
 })
+  .then((connection: Connection) => connection.runMigrations())
   .then(userService.verifyAdminUser)
   .then(() => {
     app.listen(PORT, () => {

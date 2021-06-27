@@ -13,7 +13,6 @@ db_logs
 .prettierrc
 .gitignore
 .env
-migrations
 
 # Don't need tests
 test
