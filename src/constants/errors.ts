@@ -19,3 +19,8 @@ export const TASK_ERRORS = {
   HTTP_404: (boardId: string, taskId: string): string =>
     `Task not found with id ${taskId} within board ${boardId}`,
 };
+
+export const AUTH_ERRORS = {
+  HTTP_400: 'No login or password provided',
+  HTTP_403: 'Invalid login or password',
+};
