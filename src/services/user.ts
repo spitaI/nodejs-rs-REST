@@ -1,4 +1,5 @@
 import * as userRepo from '../repositories/user';
+import { ADMIN_USER } from '../constants/user';
 import { hashPassword } from '../utils/user';
 
 export const getAll = async (): Promise<ReturnType<typeof userRepo.getAll>> =>
@@ -28,3 +29,10 @@ export const updateById = async (
 
 export const deleteById = async (id: string): Promise<boolean> =>
   userRepo.deleteById(id);
+
+export const verifyAdminUser = async (): Promise<void> => {
+  const admin = await getByUsername(ADMIN_USER.login);
+  if (!admin) {
+    await create(ADMIN_USER);
+  }
+};
