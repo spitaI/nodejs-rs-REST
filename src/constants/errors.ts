@@ -22,5 +22,6 @@ export const TASK_ERRORS = {
 
 export const AUTH_ERRORS = {
   HTTP_400: 'No login or password provided',
+  HTTP_401: 'Invalid access token',
   HTTP_403: 'Invalid login or password',
 };
