@@ -25,11 +25,3 @@ export const deleteById = async (
   boardId: string,
   taskId: string
 ): Promise<boolean> => taskRepo.deleteById(boardId, taskId);
-
-export const deleteByBoardId = async (boardId: string): Promise<boolean> =>
-  taskRepo.deleteByBoardId(boardId);
-
-export const updateOnUserDelete = async (
-  userId: string
-): Promise<ReturnType<typeof taskRepo.updateOnUserDelete>> =>
-  taskRepo.updateOnUserDelete(userId);

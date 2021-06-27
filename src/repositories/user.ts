@@ -1,22 +1,20 @@
 import User, { IUser, UserResponse } from '../models/user';
-import { getTable } from '../utils/database';
+import { getEntityDAO } from '../utils/database';
 
-const usersTable = getTable<IUser>('USERS');
+const userDAO = getEntityDAO<IUser>(User);
 
-export const getAll = async (): Promise<(UserResponse | null)[]> =>
-  usersTable.getAll().map(User.toResponse);
+export const getAll = async (): Promise<UserResponse[]> => userDAO.getAll();
 
 export const getById = async (id: string): Promise<UserResponse | null> =>
-  User.toResponse(usersTable.getById(id));
+  userDAO.getById({ id });
 
 export const create = async (user: IUser): Promise<UserResponse | null> =>
-  User.toResponse(usersTable.create(new User({ ...user })));
+  User.toResponse(await userDAO.create(user));
 
 export const updateById = async (
   id: string,
   userData: Partial<IUser>
-): Promise<UserResponse | null> =>
-  User.toResponse(usersTable.updateById(id, userData));
+): Promise<UserResponse | null> => userDAO.update({ id }, userData);
 
 export const deleteById = async (id: string): Promise<boolean> =>
-  usersTable.removeById(id);
+  userDAO.remove({ id });

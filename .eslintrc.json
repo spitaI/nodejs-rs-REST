@@ -40,6 +40,8 @@
     "no-underscore-dangle": "off",
     "import/prefer-default-export": "off",
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-    "no-process-exit": "off"
+    "no-process-exit": "off",
+    "no-await-in-loop": "off",
+    "class-methods-use-this": "off"
   }
 }

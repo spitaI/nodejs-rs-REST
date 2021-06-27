@@ -1,20 +1,20 @@
 import Board, { IBoard } from '../models/board';
-import { getTable } from '../utils/database';
+import { getEntityDAO } from '../utils/database';
 
-const boardsTable = getTable<IBoard>('BOARDS');
+const boardDAO = getEntityDAO<IBoard>(Board);
 
-export const getAll = async (): Promise<IBoard[]> => boardsTable.getAll();
+export const getAll = async (): Promise<IBoard[]> => boardDAO.getAll();
 
 export const getById = async (id: string): Promise<IBoard | null> =>
-  boardsTable.getById(id);
+  boardDAO.getById({ id });
 
-export const create = async (board: IBoard): Promise<IBoard> =>
-  boardsTable.create(new Board({ ...board }));
+export const create = async (board: IBoard): Promise<IBoard | null> =>
+  boardDAO.create(board);
 
 export const updateById = async (
   id: string,
   boardData: Partial<IBoard>
-): Promise<IBoard | null> => boardsTable.updateById(id, boardData);
+): Promise<IBoard | null> => boardDAO.update({ id }, boardData);
 
 export const deleteById = async (id: string): Promise<boolean> =>
-  boardsTable.removeById(id);
+  boardDAO.remove({ id });

@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export interface IColumn {
   id: string;
@@ -12,18 +12,16 @@ export interface IBoard {
   columns: IColumn[];
 }
 
-class Board implements IBoard {
-  id: string;
+@Entity()
+class Board {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-  title: string;
+  @Column('text')
+  title!: string;
 
-  columns: IColumn[];
-
-  constructor({ id = uuidv4(), title = 'DEFAULT', columns = [] }: IBoard) {
-    this.id = id;
-    this.title = title;
-    this.columns = columns.map(col => ({ ...col, id: uuidv4() }));
-  }
+  @Column({ type: 'simple-json', array: false, default: () => "'[]'" })
+  columns!: IColumn[];
 }
 
 export default Board;

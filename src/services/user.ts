@@ -1,5 +1,4 @@
 import * as userRepo from '../repositories/user';
-import * as taskService from './task';
 
 export const getAll = async (): Promise<ReturnType<typeof userRepo.getAll>> =>
   userRepo.getAll();
@@ -18,7 +17,5 @@ export const updateById = async (
 ): Promise<ReturnType<typeof userRepo.updateById>> =>
   userRepo.updateById(id, userData);
 
-export const deleteById = async (id: string): Promise<boolean> => {
-  await taskService.updateOnUserDelete(id);
-  return userRepo.deleteById(id);
-};
+export const deleteById = async (id: string): Promise<boolean> =>
+  userRepo.deleteById(id);

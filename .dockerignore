@@ -12,6 +12,8 @@ db_logs
 .eslintrc.json
 .prettierrc
 .gitignore
+.env
+migrations
 
 # Don't need tests
 test

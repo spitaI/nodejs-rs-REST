@@ -15,9 +15,17 @@ services:
       - db
     networks:
       - backend
+    environment:
+      PORT: ${PORT}
+      LOGS_DIRNAME: ${LOGS_DIRNAME}
+      POSTGRES_HOST: ${PG_SERVICE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      NODE_ENV: ${NODE_ENV}
   db:
     image: spitai/postgres
-    container_name: postgres
+    container_name: ${PG_SERVICE}
     restart: always
     build:
       context: .
@@ -29,9 +37,9 @@ services:
       - ./db_logs:/logs:z
     command: postgres -c logging_collector=on -c log_directory=/logs
     environment:
-      POSTGRES_USER: '${POSTGRES_USER}'
-      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
-      POSTGRES_DB: '${POSTGRES_DB}'
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     networks:
       - backend
 

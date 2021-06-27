@@ -6,13 +6,10 @@ import YAML from 'yamljs';
 
 import initRoutes from './routes';
 import { COMMON_ERRORS } from './constants/errors';
-import getDirname from './utils/getDirname';
 import ExpressLogger from './utils/logger';
 import config from './common/config';
 
 const { LOGS_DIRNAME } = config;
-
-const dirname = getDirname(import.meta.url);
 
 const logger = new ExpressLogger({
   filename: 'info.log',
@@ -20,8 +17,32 @@ const logger = new ExpressLogger({
   dirname: LOGS_DIRNAME,
 });
 
+process.on('uncaughtException', (err: Error) => {
+  const date = new Date().toISOString();
+  const message = `[${date}] uncaughtException \n${err.stack}`;
+
+  if (logger.errorPath) {
+    fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
+  }
+
+  logger.error(message);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err: Error) => {
+  const date = new Date().toISOString();
+  const message = `[${date}] unhandledRejection \n${err.stack}`;
+
+  if (logger.errorPath) {
+    fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
+  }
+
+  logger.error(message);
+  process.exit(1);
+});
+
 const app = express();
-const swaggerDocument = YAML.load(path.join(dirname, '../doc/api.yaml'));
+const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());
 
@@ -47,22 +68,5 @@ app.use(
     next();
   }
 );
-
-process.on('uncaughtException', (err: Error) => {
-  const date = new Date().toISOString();
-  const message = `[${date}] uncaughtException \n${err.stack}`;
-
-  if (logger.errorPath) {
-    fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
-  }
-
-  logger.error(message);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (err: Error) => {
-  const date = new Date().toISOString();
-  logger.error(`[${date}] unhandledRejection`, `\n${err.stack}`);
-});
 
 export default app;

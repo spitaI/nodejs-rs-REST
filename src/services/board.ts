@@ -1,5 +1,4 @@
 import * as boardRepo from '../repositories/board';
-import * as taskService from './task';
 
 export const getAll = async (): Promise<ReturnType<typeof boardRepo.getAll>> =>
   boardRepo.getAll();
@@ -18,7 +17,5 @@ export const updateById = async (
 ): Promise<ReturnType<typeof boardRepo.updateById>> =>
   boardRepo.updateById(id, boardData);
 
-export const deleteById = async (id: string): Promise<boolean> => {
-  await taskService.deleteByBoardId(id);
-  return boardRepo.deleteById(id);
-};
+export const deleteById = async (id: string): Promise<boolean> =>
+  boardRepo.deleteById(id);
