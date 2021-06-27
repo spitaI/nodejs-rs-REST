@@ -6,7 +6,13 @@ const userDAO = getEntityDAO<IUser>(User);
 export const getAll = async (): Promise<UserResponse[]> => userDAO.getAll();
 
 export const getById = async (id: string): Promise<UserResponse | null> =>
-  userDAO.getById({ id });
+  userDAO.find({ id });
+
+export const getByUsername = async (username: string): Promise<IUser | null> =>
+  userDAO.find({
+    where: { login: username },
+    select: ['id', 'name', 'login', 'password'],
+  });
 
 export const create = async (user: IUser): Promise<UserResponse | null> =>
   User.toResponse(await userDAO.create(user));

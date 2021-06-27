@@ -7,6 +7,11 @@ export const getById = async (
   id: string
 ): Promise<ReturnType<typeof userRepo.getById>> => userRepo.getById(id);
 
+export const getByUsername = async (
+  username: string
+): Promise<ReturnType<typeof userRepo.getByUsername>> =>
+  userRepo.getByUsername(username);
+
 export const create = async (
   user: Parameters<typeof userRepo.create>[0]
 ): Promise<ReturnType<typeof userRepo.create>> => userRepo.create(user);

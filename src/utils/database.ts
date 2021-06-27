@@ -11,7 +11,7 @@ type FindOptions<T> = FindConditions<T> | FindOneOptions<T>;
 
 interface IEntityDAO<T> {
   getAll: (findOptions?: FindManyOptions<T>) => Promise<T[]>;
-  getById: (findOptions: FindOptions<T>) => Promise<T | null>;
+  find: (findOptions: FindOptions<T>) => Promise<T | null>;
   create: (item: T) => Promise<T | null>;
   update: (
     findOptions: FindOptions<T>,
@@ -24,7 +24,7 @@ const wrapEntity = <T>(entity: EntityTarget<T>): IEntityDAO<T> => {
   const getAll = async (findOptions?: FindManyOptions<T>): Promise<T[]> =>
     getConnection().getRepository(entity).find(findOptions);
 
-  const getById = async (findOptions: FindOptions<T>): Promise<T | null> => {
+  const find = async (findOptions: FindOptions<T>): Promise<T | null> => {
     try {
       const item = await getConnection()
         .getRepository(entity)
@@ -57,7 +57,7 @@ const wrapEntity = <T>(entity: EntityTarget<T>): IEntityDAO<T> => {
         return null;
       }
 
-      return await getById(findOptions);
+      return await find(findOptions);
     } catch (e) {
       return null;
     }
@@ -76,7 +76,7 @@ const wrapEntity = <T>(entity: EntityTarget<T>): IEntityDAO<T> => {
 
   return {
     getAll,
-    getById,
+    find,
     create,
     update,
     remove,

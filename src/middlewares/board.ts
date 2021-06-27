@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 import * as boardService from '../services/board';
 import { BOARD_ERRORS } from '../constants/errors';
+
+const { NOT_FOUND } = StatusCodes;
 
 export const checkBoard = async (
   req: Request,
@@ -12,7 +15,9 @@ export const checkBoard = async (
   const board = await boardService.getById(boardId);
 
   if (!board) {
-    return res.status(404).json({ message: BOARD_ERRORS.HTTP_404(boardId) });
+    return res
+      .status(NOT_FOUND)
+      .json({ message: BOARD_ERRORS.HTTP_404(boardId) });
   }
 
   return next();

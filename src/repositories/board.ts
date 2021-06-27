@@ -6,7 +6,7 @@ const boardDAO = getEntityDAO<IBoard>(Board);
 export const getAll = async (): Promise<IBoard[]> => boardDAO.getAll();
 
 export const getById = async (id: string): Promise<IBoard | null> =>
-  boardDAO.getById({ id });
+  boardDAO.find({ id });
 
 export const create = async (board: IBoard): Promise<IBoard | null> =>
   boardDAO.create(board);

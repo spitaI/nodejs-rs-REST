@@ -5,6 +5,8 @@ export const COMMON_ERRORS = {
 export const USER_ERRORS = {
   HTTP_500: 'Error while creating new user',
   HTTP_404: (id: string): string => `User not found with id ${id}`,
+  HTTP_400: (username: string): string =>
+    `Username ${username} is already taken`,
 };
 
 export const BOARD_ERRORS = {
