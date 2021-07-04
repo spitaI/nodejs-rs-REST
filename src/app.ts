@@ -5,6 +5,7 @@ import path from 'path';
 import YAML from 'yamljs';
 
 import initRoutes from './routes';
+import { verifyAuth } from './middlewares/verifyAuth';
 import { COMMON_ERRORS } from './constants/errors';
 import ExpressLogger from './utils/logger';
 import config from './common/config';
@@ -47,6 +48,8 @@ const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 app.use(express.json());
 
 app.use(logger.getLogMiddleware());
+
+app.use(verifyAuth);
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 

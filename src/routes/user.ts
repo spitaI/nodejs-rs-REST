@@ -1,9 +1,13 @@
 import { Router, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 import * as userService from '../services/user';
 import { USER_SCHEMA } from '../constants/validation';
 import { USER_ERRORS } from '../constants/errors';
 import { getValidationMiddleware } from '../middlewares/validation';
+import { checkUserExist } from '../middlewares/checkUserExist';
+
+const { CREATED, NOT_FOUND, NO_CONTENT, INTERNAL_SERVER_ERROR } = StatusCodes;
 
 const validateUser = getValidationMiddleware(USER_SCHEMA);
 
@@ -15,14 +19,16 @@ router
     const users = await userService.getAll();
     return res.json(users);
   })
-  .post(validateUser, async (req: Request, res: Response) => {
+  .post(validateUser, checkUserExist, async (req: Request, res: Response) => {
     const newUser = await userService.create(req.body);
 
     if (!newUser) {
-      return res.status(500).json({ message: USER_ERRORS.HTTP_500 });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: USER_ERRORS.HTTP_500 });
     }
 
-    return res.status(201).json(newUser);
+    return res.status(CREATED).json(newUser);
   });
 
 router
@@ -32,7 +38,7 @@ router
     const user = await userService.getById(id);
 
     if (!user) {
-      return res.status(404).json({ message: USER_ERRORS.HTTP_404(id) });
+      return res.status(NOT_FOUND).json({ message: USER_ERRORS.HTTP_404(id) });
     }
 
     return res.json(user);
@@ -42,7 +48,7 @@ router
     const updatedUser = await userService.updateById(id, req.body);
 
     if (!updatedUser) {
-      return res.status(404).json({ message: USER_ERRORS.HTTP_404(id) });
+      return res.status(NOT_FOUND).json({ message: USER_ERRORS.HTTP_404(id) });
     }
 
     return res.json(updatedUser);
@@ -52,10 +58,10 @@ router
     const isUserDeleted = await userService.deleteById(id);
 
     if (!isUserDeleted) {
-      return res.status(404).json({ message: USER_ERRORS.HTTP_404(id) });
+      return res.status(NOT_FOUND).json({ message: USER_ERRORS.HTTP_404(id) });
     }
 
-    return res.sendStatus(204);
+    return res.sendStatus(NO_CONTENT);
   });
 
 export default router;

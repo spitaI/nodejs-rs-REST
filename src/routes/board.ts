@@ -1,9 +1,12 @@
 import { Router, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 import * as boardService from '../services/board';
 import { BOARD_SCHEMA } from '../constants/validation';
 import { BOARD_ERRORS } from '../constants/errors';
 import { getValidationMiddleware } from '../middlewares/validation';
+
+const { CREATED, NOT_FOUND, NO_CONTENT, INTERNAL_SERVER_ERROR } = StatusCodes;
 
 const validateBoard = getValidationMiddleware(BOARD_SCHEMA);
 
@@ -19,10 +22,12 @@ router
     const newBoard = await boardService.create(req.body);
 
     if (!newBoard) {
-      return res.status(500).json({ message: BOARD_ERRORS.HTTP_500 });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: BOARD_ERRORS.HTTP_500 });
     }
 
-    return res.status(201).json(newBoard);
+    return res.status(CREATED).json(newBoard);
   });
 
 router
@@ -32,7 +37,7 @@ router
     const board = await boardService.getById(id);
 
     if (!board) {
-      return res.status(404).json({ message: BOARD_ERRORS.HTTP_404(id) });
+      return res.status(NOT_FOUND).json({ message: BOARD_ERRORS.HTTP_404(id) });
     }
 
     return res.json(board);
@@ -42,7 +47,7 @@ router
     const updatedBoard = await boardService.updateById(id, req.body);
 
     if (!updatedBoard) {
-      return res.status(404).json({ message: BOARD_ERRORS.HTTP_404(id) });
+      return res.status(NOT_FOUND).json({ message: BOARD_ERRORS.HTTP_404(id) });
     }
 
     return res.json(updatedBoard);
@@ -52,10 +57,10 @@ router
     const isBoardDeleted = await boardService.deleteById(id);
 
     if (!isBoardDeleted) {
-      return res.status(404).json({ message: BOARD_ERRORS.HTTP_404(id) });
+      return res.status(NOT_FOUND).json({ message: BOARD_ERRORS.HTTP_404(id) });
     }
 
-    return res.sendStatus(204);
+    return res.sendStatus(NO_CONTENT);
   });
 
 export default router;

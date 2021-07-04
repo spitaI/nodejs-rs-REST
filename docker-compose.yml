@@ -23,6 +23,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       NODE_ENV: ${NODE_ENV}
+      JWT_SECRET: ${JWT_SECRET}
   db:
     image: spitai/postgres
     container_name: ${PG_SERVICE}

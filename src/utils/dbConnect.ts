@@ -1,4 +1,4 @@
-import { createConnection } from 'typeorm';
+import { Connection, createConnection } from 'typeorm';
 
 import ExpressLogger from './logger';
 import { DEFAULT_RETRIES, DEFAULT_WAIT_TIMEOUT } from '../constants/database';
@@ -13,7 +13,7 @@ const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export const connect = async ({
   retries,
   logger,
-}: ConnectionConfig): Promise<void> => {
+}: ConnectionConfig): Promise<Connection> => {
   let connection = null;
   let retriesLeft = retries || DEFAULT_RETRIES;
   while (retriesLeft) {
@@ -38,4 +38,6 @@ export const connect = async ({
   if (!connection) {
     throw new Error(`Can't connect to DB`);
   }
+
+  return connection;
 };

@@ -10,7 +10,7 @@ export default {
   LOGS_DIRNAME: process.env['LOGS_DIRNAME'],
   PORT: process.env['PORT'],
   NODE_ENV: process.env['NODE_ENV'],
-  JWT_SECRET_KEY: process.env['JWT_SECRET_KEY'],
+  JWT_SECRET: process.env['JWT_SECRET'],
   AUTH_MODE: process.env['AUTH_MODE'] === 'true',
   POSTGRES_HOST: process.env['POSTGRES_HOST'],
   POSTGRES_PORT: process.env['POSTGRES_PORT'],

@@ -14,7 +14,7 @@ export const getById = async (
   boardId: string,
   taskId: string
 ): Promise<ITask | null> =>
-  taskDAO.getById({
+  taskDAO.find({
     where: { id: taskId, boardId },
     relations: ['boardId', 'userId'],
     loadRelationIds: true,
