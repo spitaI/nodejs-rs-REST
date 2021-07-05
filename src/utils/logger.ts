@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Injectable, Logger } from '@nestjs/common';
 import fs, { WriteStream } from 'fs';
 import path from 'path';
 import chalk from 'chalk';
@@ -12,9 +12,10 @@ export type LoggerOptions = {
   dirname?: string | false;
 };
 
-const { APP_ROOT } = config;
+const { APP_ROOT } = config();
 
-class ExpressLogger {
+@Injectable()
+class ExpressLogger extends Logger {
   private logStream: WriteStream | null;
 
   private errorLogStream: WriteStream | null;
@@ -47,7 +48,7 @@ class ExpressLogger {
     return [logPath, errorPath];
   }
 
-  private static formatStatusCode(statusCode: number): string {
+  static formatStatusCode(statusCode: number): string {
     const code = `${statusCode}`;
 
     if (code.startsWith('2')) return chalk.green(code);
@@ -60,6 +61,9 @@ class ExpressLogger {
   }
 
   constructor(opts?: LoggerOptions) {
+    super();
+    Logger.overrideLogger(['log']);
+
     const { dirname, filename, errorFilename } = opts || {};
 
     const [logPath, errorPath] = ExpressLogger.getLogsPath(
@@ -89,50 +93,12 @@ class ExpressLogger {
     this.errorLogStream?.write(ExpressLogger.clearColor(errMsg));
   }
 
-  getLogMiddleware() {
-    return async (
-      req: Request,
-      res: Response,
-      next: NextFunction
-    ): Promise<void> => {
-      const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-      const queryParams = JSON.stringify(req.query);
-      const body = JSON.stringify(req.body);
-      const date = new Date().toISOString();
-
-      const timeStart = Date.now();
-
-      res.on('finish', () => {
-        const timeDelta = Date.now() - timeStart;
-        this.log(
-          `[${chalk.gray(date)}]`,
-          `${chalk.greenBright(req.method)}`,
-          `${url}`,
-          `${chalk.magenta('QUERY')}: ${queryParams}`,
-          `${chalk.magenta('BODY')}: ${body}`,
-          ExpressLogger.formatStatusCode(res.statusCode),
-          `${timeDelta}ms`
-        );
-      });
-
-      next();
-    };
-  }
-
-  getErrorMiddleware() {
-    return async (
-      err: Error,
-      _req: Request,
-      _res: Response,
-      next: NextFunction
-    ): Promise<void> => {
-      const date = new Date().toISOString();
-      const errorMessage = `[${chalk.gray(date)}] ${chalk.red('ERROR')} ${
-        err.message
-      }`;
-      this.error(errorMessage, `\n${err.stack}\n`, '-'.repeat(100));
-      next(err);
-    };
+  logError(err: Error): void {
+    const date = new Date().toISOString();
+    const errorMessage = `[${chalk.gray(date)}] ${chalk.red('ERROR')} ${
+      err.message
+    }`;
+    this.error(errorMessage, `\n${err.stack}\n`, '-'.repeat(100));
   }
 }
 
