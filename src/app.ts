@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConnectionOptions } from 'typeorm';
 
+import { UserModule } from './modules/user';
 import config from './common/config';
 import ormconfig from '../ormconfig';
 
@@ -50,6 +51,7 @@ import ormconfig from '../ormconfig';
           synchronize: false,
         } as ConnectionOptions),
     }),
+    UserModule,
   ],
 })
 export class AppModule {}
