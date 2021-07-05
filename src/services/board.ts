@@ -1,21 +1,29 @@
-import * as boardRepo from '../repositories/board';
+import { Injectable } from '@nestjs/common';
 
-export const getAll = async (): Promise<ReturnType<typeof boardRepo.getAll>> =>
-  boardRepo.getAll();
+import { IBoard } from '../models/board';
+import { BoardRepository } from '../repositories/board';
 
-export const getById = async (
-  id: string
-): Promise<ReturnType<typeof boardRepo.getById>> => boardRepo.getById(id);
+@Injectable()
+export class BoardService {
+  constructor(private boardRepo: BoardRepository) {}
 
-export const create = async (
-  board: Parameters<typeof boardRepo.create>[0]
-): Promise<ReturnType<typeof boardRepo.create>> => boardRepo.create(board);
+  async getAll(): Promise<IBoard[]> {
+    return this.boardRepo.getAll();
+  }
 
-export const updateById = async (
-  id: string,
-  boardData: Parameters<typeof boardRepo.updateById>[1]
-): Promise<ReturnType<typeof boardRepo.updateById>> =>
-  boardRepo.updateById(id, boardData);
+  async getById(id: string): Promise<IBoard | null> {
+    return this.boardRepo.find({ id });
+  }
 
-export const deleteById = async (id: string): Promise<boolean> =>
-  boardRepo.deleteById(id);
+  async create(board: IBoard): Promise<IBoard | null> {
+    return this.boardRepo.create(board);
+  }
+
+  async updateById(id: string, board: Partial<IBoard>): Promise<IBoard | null> {
+    return this.boardRepo.update({ id }, board);
+  }
+
+  async deleteById(id: string): Promise<boolean> {
+    return this.boardRepo.remove({ id });
+  }
+}

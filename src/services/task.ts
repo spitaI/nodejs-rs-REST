@@ -1,27 +1,41 @@
-import * as taskRepo from '../repositories/task';
+import { Injectable } from '@nestjs/common';
 
-export const getAll = async (
-  boardId: string
-): Promise<ReturnType<typeof taskRepo.getAll>> => taskRepo.getAll(boardId);
+import { ITask } from '../models/task';
+import { TaskRepository } from '../repositories/task';
 
-export const getById = async (
-  boardId: string,
-  taskId: string
-): Promise<ReturnType<typeof taskRepo.getById>> =>
-  taskRepo.getById(boardId, taskId);
+@Injectable()
+export class TaskService {
+  constructor(private taskRepo: TaskRepository) {}
 
-export const create = async (
-  task: Parameters<typeof taskRepo.create>[0]
-): Promise<ReturnType<typeof taskRepo.create>> => taskRepo.create(task);
+  async getAll(boardId: string): Promise<ITask[]> {
+    return this.taskRepo.getAll({
+      where: { boardId },
+      relations: ['boardId', 'userId'],
+      loadRelationIds: true,
+    });
+  }
 
-export const updateById = async (
-  boardId: string,
-  taskId: string,
-  taskData: Parameters<typeof taskRepo.updateById>[2]
-): Promise<ReturnType<typeof taskRepo.updateById>> =>
-  taskRepo.updateById(boardId, taskId, taskData);
+  async getById(boardId: string, taskId: string): Promise<ITask | null> {
+    return this.taskRepo.find({
+      where: { id: taskId, boardId },
+      relations: ['boardId', 'userId'],
+      loadRelationIds: true,
+    });
+  }
 
-export const deleteById = async (
-  boardId: string,
-  taskId: string
-): Promise<boolean> => taskRepo.deleteById(boardId, taskId);
+  async create(task: ITask): Promise<ITask | null> {
+    return this.taskRepo.create(task);
+  }
+
+  async updateById(
+    boardId: string,
+    taskId: string,
+    taskData: Partial<ITask>
+  ): Promise<ITask | null> {
+    return this.taskRepo.update({ id: taskId, boardId }, taskData);
+  }
+
+  async deleteById(boardId: string, taskId: string): Promise<boolean> {
+    return this.taskRepo.remove({ id: taskId, boardId });
+  }
+}
