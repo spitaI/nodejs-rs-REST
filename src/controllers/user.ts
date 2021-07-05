@@ -8,11 +8,17 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { IUser, UserResponse } from '../models/user';
 import { UserService } from '../services/user';
+import { CheckUserExistInterceptor } from '../interceptors/checkUserExistInterceptor';
+import { getValidationInterceptor } from '../interceptors/validationInterceptor';
+import { USER_SCHEMA } from '../constants/validation';
 import { USER_ERRORS } from '../constants/errors';
+
+const UserValidationInterceptor = getValidationInterceptor(USER_SCHEMA);
 
 @Controller('users')
 export class UserController {
@@ -24,6 +30,8 @@ export class UserController {
   }
 
   @Post()
+  @UseInterceptors(CheckUserExistInterceptor)
+  @UseInterceptors(UserValidationInterceptor)
   async create(@Body() user: IUser): Promise<UserResponse | null> {
     const newUser = await this.userService.create(user);
 
