@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConnectionOptions } from 'typeorm';
 
 import { UserModule } from './modules/user';
+import { AuthModule } from './modules/auth';
 import config from './common/config';
 import ormconfig from '../ormconfig';
 
@@ -52,6 +53,7 @@ import ormconfig from '../ormconfig';
         } as ConnectionOptions),
     }),
     UserModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

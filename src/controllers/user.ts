@@ -8,11 +8,13 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
 import { IUser, UserResponse } from '../models/user';
 import { UserService } from '../services/user';
+import { VerifyAuthGuard } from '../guards/verifyAuthGuard';
 import { CheckUserExistInterceptor } from '../interceptors/checkUserExistInterceptor';
 import { getValidationInterceptor } from '../interceptors/validationInterceptor';
 import { USER_SCHEMA } from '../constants/validation';
@@ -21,6 +23,7 @@ import { USER_ERRORS } from '../constants/errors';
 const UserValidationInterceptor = getValidationInterceptor(USER_SCHEMA);
 
 @Controller('users')
+@UseGuards(new VerifyAuthGuard())
 export class UserController {
   constructor(private userService: UserService) {}
 
