@@ -6,7 +6,7 @@ const {
   POSTGRES_USER,
   POSTGRES_PASSWORD,
   POSTGRES_DB,
-} = config;
+} = config();
 
 export default {
   name: 'default',
@@ -16,10 +16,10 @@ export default {
   username: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
   database: POSTGRES_DB,
-  entities: ['./src/models/**/*.ts'],
-  migrations: ['./migrations/**/*.ts'],
+  entities: ['./build/src/models/**/*.js'],
+  migrations: ['./build/migrations/**/*.js'],
   cli: {
-    entitiesDir: './src/models',
-    migrationsDir: './migrations',
+    entitiesDir: './build/src/models',
+    migrationsDir: './build/migrations',
   },
 };

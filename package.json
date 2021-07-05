@@ -9,9 +9,10 @@
   "main": "src/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node --loader ts-node/esm --es-module-specifier-resolution=node src/server.ts",
     "watch": "nodemon -L --exitcrash",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "start": "npm run migration:run && nest start",
+    "start:dev": "npm run migration:run && nest start --watch",
     "migration:generate": "npm run typeorm migration:generate -- -n Initial --config ./ormconfig.ts",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert",
@@ -49,6 +50,14 @@
     ]
   },
   "dependencies": {
+    "@nestjs/cli": "^7.6.0",
+    "@nestjs/common": "^7.6.18",
+    "@nestjs/config": "^0.6.3",
+    "@nestjs/core": "^7.6.18",
+    "@nestjs/platform-express": "^7.6.18",
+    "@nestjs/platform-fastify": "^7.6.18",
+    "@nestjs/schematics": "^7.3.1",
+    "@nestjs/typeorm": "^7.1.5",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.1.1",
     "cross-env": "7.0.3",
@@ -58,6 +67,8 @@
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.6.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.1.0",
     "swagger-ui-express": "4.1.6",
     "typeorm": "^0.2.34",
     "yamljs": "0.3.0"
