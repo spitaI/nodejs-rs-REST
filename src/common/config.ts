@@ -1,11 +1,21 @@
-import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({
-  path: path.join(__dirname, '../../.env'),
-});
+type Config = {
+  APP_ROOT: string;
+  LOGS_DIRNAME?: string;
+  PORT?: string;
+  NODE_ENV?: string;
+  JWT_SECRET?: string;
+  AUTH_MODE?: boolean;
+  POSTGRES_HOST?: string;
+  POSTGRES_PORT?: string;
+  POSTGRES_USER?: string;
+  POSTGRES_PASSWORD?: string;
+  POSTGRES_DB?: string;
+  PG_SERVICE?: string;
+};
 
-export default {
+export default (): Config => ({
   APP_ROOT: path.join(__dirname, '../..'),
   LOGS_DIRNAME: process.env['LOGS_DIRNAME'],
   PORT: process.env['PORT'],
@@ -18,4 +28,4 @@ export default {
   POSTGRES_PASSWORD: process.env['POSTGRES_PASSWORD'],
   POSTGRES_DB: process.env['POSTGRES_DB'],
   PG_SERVICE: process.env['PG_SERVICE'],
-};
+});
