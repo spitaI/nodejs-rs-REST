@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app';
 import ExpressLogger from './utils/logger';
 import { LoggerGuard } from './guards/loggerGuard';
+import { ErrorFilter } from './exception-filters/errorFilter';
 
 (async () => {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,7 @@ import { LoggerGuard } from './guards/loggerGuard';
 
   app.useLogger(logger);
   app.useGlobalGuards(new LoggerGuard(logger));
+  app.useGlobalFilters(new ErrorFilter(logger));
 
   await app.listen(port);
 })();
