@@ -1,5 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import fs from 'fs';
 
 import { AppModule } from './app';
 import ExpressLogger from './utils/logger';
@@ -7,14 +10,43 @@ import { LoggerGuard } from './guards/loggerGuard';
 import { ErrorFilter } from './exception-filters/errorFilter';
 import { UserService } from './services/user';
 
+let logger: ExpressLogger;
+
+process.on('uncaughtException', (err: Error) => {
+  const date = new Date().toISOString();
+  const message = `[${date}] uncaughtException \n${err.stack}`;
+
+  if (logger?.errorPath) {
+    fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
+  }
+
+  logger?.error(message);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err: Error) => {
+  const date = new Date().toISOString();
+  const message = `[${date}] unhandledRejection \n${err.stack}`;
+
+  if (logger?.errorPath) {
+    fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
+  }
+
+  logger?.error(message);
+  process.exit(1);
+});
+
 (async () => {
-  const app = await NestFactory.create(AppModule);
+  const useFastify = new ConfigService().get('USE_FASTIFY') === 'true';
+  const adapter = useFastify ? new FastifyAdapter() : new ExpressAdapter();
+
+  const app = await NestFactory.create(AppModule, adapter);
 
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
   const logsDirname = configService.get('LOGS_DIRNAME');
 
-  const logger = new ExpressLogger({
+  logger = new ExpressLogger({
     filename: 'info.log',
     errorFilename: 'error.log',
     dirname: logsDirname,
@@ -27,5 +59,16 @@ import { UserService } from './services/user';
   const userService = app.get(UserService);
   userService.verifyAdminUser();
 
-  await app.listen(port);
+  const listenCb = () => {
+    const adapterName = useFastify ? 'fastify' : 'express';
+    process.stdout.write(
+      `App is running on http://localhost:${port} using ${adapterName}\n`
+    );
+  };
+
+  if (useFastify) {
+    await app.listen(port, '0.0.0.0', listenCb);
+  } else {
+    await app.listen(port, listenCb);
+  }
 })();

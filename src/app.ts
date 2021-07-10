@@ -10,30 +10,6 @@ import { AuthModule } from './modules/auth';
 import config from './common/config';
 import ormconfig from '../ormconfig';
 
-// process.on('uncaughtException', (err: Error) => {
-//   const date = new Date().toISOString();
-//   const message = `[${date}] uncaughtException \n${err.stack}`;
-
-//   if (logger.errorPath) {
-//     fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
-//   }
-
-//   logger.error(message);
-//   process.exit(1);
-// });
-
-// process.on('unhandledRejection', (err: Error) => {
-//   const date = new Date().toISOString();
-//   const message = `[${date}] unhandledRejection \n${err.stack}`;
-
-//   if (logger.errorPath) {
-//     fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
-//   }
-
-//   logger.error(message);
-//   process.exit(1);
-// });
-
 @Module({
   imports: [
     ConfigModule.forRoot({

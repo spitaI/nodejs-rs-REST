@@ -13,7 +13,7 @@ type Config = {
   POSTGRES_PASSWORD?: string;
   POSTGRES_DB?: string;
   PG_SERVICE?: string;
-  USE_FASTIFY?: string;
+  USE_FASTIFY?: boolean;
 };
 
 export default (): Config => {
@@ -29,6 +29,7 @@ export default (): Config => {
     POSTGRES_PASSWORD,
     POSTGRES_DB,
     PG_SERVICE,
+    USE_FASTIFY,
   } = process.env;
 
   return {
@@ -44,5 +45,6 @@ export default (): Config => {
     POSTGRES_PASSWORD,
     POSTGRES_DB,
     PG_SERVICE,
+    USE_FASTIFY: USE_FASTIFY === 'true',
   };
 };

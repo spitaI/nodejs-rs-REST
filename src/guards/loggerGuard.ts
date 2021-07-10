@@ -15,7 +15,7 @@ export class LoggerGuard implements CanActivate {
 
     const timeStart = Date.now();
 
-    const host = req.get?.('host');
+    const host = req.get?.('host') ?? req.hostname;
     const url = `${req.protocol}://${host}${req.url}`;
     const queryParams = JSON.stringify(req.query);
     const date = new Date().toISOString();
@@ -35,7 +35,11 @@ export class LoggerGuard implements CanActivate {
       );
     };
 
-    res.on('finish', onFinished);
+    if (!res.on) {
+      res.raw.on('finish', onFinished);
+    } else {
+      res.on('finish', onFinished);
+    }
 
     return true;
   }
