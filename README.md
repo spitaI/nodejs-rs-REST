@@ -27,6 +27,13 @@ After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
+## Running with Fastify
+
+To use the `fastify` adapter instead of `express` under `NestJS`, you have to set the `USE_FASTIFY` environment variable in `.env` file to `true`. Then you need to restart the app, if it was running.
+
+When you choose express or fastify as adapter, when the app is finally started, you'll see the message in console, saying:
+`App is running on port {PORT} using {express/fastify}`
+
 ## Running with Docker
 
 - Docker [Download & Install Docker](https://docs.docker.com/get-docker/)
