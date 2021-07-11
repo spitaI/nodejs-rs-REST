@@ -10,6 +10,8 @@ import {
   NotFoundException,
   UseGuards,
   UseInterceptors,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { IBoard } from '../models/board';
@@ -71,13 +73,12 @@ export class BoardController {
   }
 
   @Delete(':id')
-  async deleteById(@Param('id') id: string): Promise<boolean> {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteById(@Param('id') id: string): Promise<void> {
     const isBoardDeleted = await this.boardService.deleteById(id);
 
     if (!isBoardDeleted) {
       throw new NotFoundException({ message: BOARD_ERRORS.HTTP_404(id) });
     }
-
-    return isBoardDeleted;
   }
 }

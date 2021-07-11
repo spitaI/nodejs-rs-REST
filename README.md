@@ -34,6 +34,26 @@ To use the `fastify` adapter instead of `express` under `NestJS`, you have to se
 When you choose express or fastify as adapter, when the app is finally started, you'll see the message in console, saying:
 `App is running on port {PORT} using {express/fastify}`
 
+## Express vs Fastify comparison
+
+### Express ([Report](reports/express.html))
+| Requests     | [total, completed]           | 15000, 15000                                         |
+|--------------|------------------------------|------------------------------------------------------|
+| Duration     | [min, max, median, p95, p99] | 823.7ms, 21060.6ms, 15504.7ms, 20464.7ms, 20728.7ms  |
+| Latencies    | [min, max, median, p95, p99] | 28ms, 7055ms, 2945.5ms, 6349.5ms, 6716.5ms           |
+| RPS          | [count, mean]                | 15000, 49.18                                         |
+| Success      | [ratio]                      | 100.00%                                              |
+| Status Codes | [code:count]                 | 200:6000, 201:6000, 204:3000                         |
+
+### Fastify ([Report](reports/fastify.html))
+| Requests     | [total, completed]           | 15000, 15000                                         |
+|--------------|------------------------------|------------------------------------------------------|
+| Duration     | [min, max, median, p95, p99] | 494.4ms, 25446.3ms, 10875.6ms, 22499ms, 24108.9ms    |
+| Latencies    | [min, max, median, p95, p99] | 8ms, 8476ms, 2050ms, 5118ms, 7182ms                  |
+| RPS          | [count, mean]                | 15000, 49.35                                         |
+| Success      | [ratio]                      | 100.00%                                              |
+| Status Codes | [code:count]                 | 200:6000, 201:6000, 204:3000                         |
+
 ## Running with Docker
 
 - Docker [Download & Install Docker](https://docs.docker.com/get-docker/)

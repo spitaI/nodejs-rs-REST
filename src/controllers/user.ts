@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
   NotFoundException,
   Param,
@@ -71,13 +73,12 @@ export class UserController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<boolean> {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Param('id') id: string): Promise<void> {
     const isUserDeleted = await this.userService.deleteById(id);
 
     if (!isUserDeleted) {
       throw new NotFoundException({ message: USER_ERRORS.HTTP_404(id) });
     }
-
-    return isUserDeleted;
   }
 }

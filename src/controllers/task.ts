@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
   NotFoundException,
   Param,
@@ -86,10 +88,11 @@ export class TaskController {
   }
 
   @Delete(':taskId')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
     @Param('boardId') boardId: string,
     @Param('taskId') taskId: string
-  ): Promise<boolean> {
+  ): Promise<void> {
     const isTaskDeleted = await this.taskService.deleteById(boardId, taskId);
 
     if (!isTaskDeleted) {
@@ -97,7 +100,5 @@ export class TaskController {
         message: TASK_ERRORS.HTTP_404(boardId, taskId),
       });
     }
-
-    return isTaskDeleted;
   }
 }

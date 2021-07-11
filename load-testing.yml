@@ -1,0 +1,43 @@
+config:
+  target: 'http://localhost:4000'
+  phases:
+    - name: 'Main phase'
+      duration: 300
+      arrivalRate: 10
+
+scenarios:
+  - name: 'Boards list scenario'
+    flow:
+      - post:
+          url: '/login'
+          json:
+            login: 'admin'
+            password: 'admin'
+          capture:
+            - json: '$.token'
+              as: 'token'
+      - post:
+          url: '/boards'
+          headers:
+            authorization: 'Bearer {{token}}'
+          json:
+            title: 'Test board'
+            columns: []
+          capture:
+            - json: '$.id'
+              as: 'id'
+      - get:
+          url: '/boards/{{id}}'
+          headers:
+            authorization: 'Bearer {{token}}'
+      - put:
+          url: '/boards/{{id}}'
+          headers:
+            authorization: 'Bearer {{token}}'
+          json:
+            title: 'Test board upd'
+            columns: []
+      - delete:
+          url: '/boards/{{id}}'
+          headers:
+            authorization: 'Bearer {{token}}'
