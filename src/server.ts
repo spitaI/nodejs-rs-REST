@@ -2,6 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { SwaggerModule } from '@nestjs/swagger';
+import YAML from 'yamljs';
+import path from 'path';
 import fs from 'fs';
 
 import { AppModule } from './app';
@@ -58,6 +61,9 @@ process.on('unhandledRejection', (err: Error) => {
 
   const userService = app.get(UserService);
   userService.verifyAdminUser();
+
+  const apiDocs = YAML.load(path.join(__dirname, '../doc/api.yaml'));
+  SwaggerModule.setup('doc', app, apiDocs);
 
   const listenCb = () => {
     const adapterName = useFastify ? 'fastify' : 'express';
