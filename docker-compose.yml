@@ -24,6 +24,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       NODE_ENV: ${NODE_ENV}
       JWT_SECRET: ${JWT_SECRET}
+      USE_FASTIFY: ${USE_FASTIFY}
   db:
     image: spitai/postgres
     container_name: ${PG_SERVICE}

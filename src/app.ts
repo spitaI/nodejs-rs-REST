@@ -1,75 +1,39 @@
-import express, { Request, Response, NextFunction } from 'express';
-import swaggerUI from 'swagger-ui-express';
-import fs from 'fs';
-import path from 'path';
-import YAML from 'yamljs';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConnectionOptions } from 'typeorm';
 
-import initRoutes from './routes';
-import { verifyAuth } from './middlewares/verifyAuth';
-import { COMMON_ERRORS } from './constants/errors';
-import ExpressLogger from './utils/logger';
+import { UserModule } from './modules/user';
+import { BoardModule } from './modules/board';
+import { TaskModule } from './modules/task';
+import { AuthModule } from './modules/auth';
 import config from './common/config';
+import ormconfig from '../ormconfig';
 
-const { LOGS_DIRNAME } = config;
-
-const logger = new ExpressLogger({
-  filename: 'info.log',
-  errorFilename: 'error.log',
-  dirname: LOGS_DIRNAME,
-});
-
-process.on('uncaughtException', (err: Error) => {
-  const date = new Date().toISOString();
-  const message = `[${date}] uncaughtException \n${err.stack}`;
-
-  if (logger.errorPath) {
-    fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
-  }
-
-  logger.error(message);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (err: Error) => {
-  const date = new Date().toISOString();
-  const message = `[${date}] unhandledRejection \n${err.stack}`;
-
-  if (logger.errorPath) {
-    fs.writeFileSync(logger.errorPath, message, { flag: 'a' });
-  }
-
-  logger.error(message);
-  process.exit(1);
-});
-
-const app = express();
-const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
-
-app.use(express.json());
-
-app.use(logger.getLogMiddleware());
-
-app.use(verifyAuth);
-
-app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
-
-app.use('/', (req: Request, res: Response, next: NextFunction) => {
-  if (req.originalUrl === '/') {
-    res.send('Service is running!');
-    return;
-  }
-  next();
-});
-
-initRoutes(app);
-
-app.use(logger.getErrorMiddleware());
-
-app.use(
-  async (_err: Error, _req: Request, res: Response, next: NextFunction) => {
-    res.status(500).json({ message: COMMON_ERRORS.HTTP_500 });
-    next();
-  }
-);
-
-export default app;
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      load: [config],
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        ({
+          ...ormconfig,
+          host: configService.get('POSTGRES_HOST'),
+          port: Number(configService.get('POSTGRES_PORT')) || 5432,
+          username: configService.get('POSTGRES_USER'),
+          password: configService.get('POSTGRES_PASSWORD'),
+          database: configService.get('POSTGRES_DB'),
+          synchronize: false,
+        } as ConnectionOptions),
+    }),
+    UserModule,
+    BoardModule,
+    TaskModule,
+    AuthModule,
+  ],
+})
+export class AppModule {}
